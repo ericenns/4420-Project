@@ -1,0 +1,11 @@
+Data Structures to Test:
+- X-Fast Trie
+- Skip List
+- Bitwise Trie
+
+
+Operations to Test:
+- insert
+- delete
+- search
+- predecessor
