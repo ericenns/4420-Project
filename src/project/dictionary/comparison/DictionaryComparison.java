@@ -1,7 +1,12 @@
 package project.dictionary.comparison;
 
-public class DictionaryComparison {
-	public static void main(String[] argv) {
-		System.out.println("Hello World!");
+import project.dictionary.comparison.tree.BitwiseTrie;
+
+public class DictionaryComparison 
+{
+	public static void main(String[] argv) 
+	{
+		BitwiseTrie trie = new BitwiseTrie();
+		trie.insert(2);
 	}
 }
