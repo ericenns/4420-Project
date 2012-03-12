@@ -3,18 +3,21 @@ package project.dictionary.comparison.tree;
 public class Node {
 	protected Node leftChild;
 	protected Node rightChild;
+	protected Node parent;
 	protected int key;
 	
 	public Node(int key) {
 		this.key = key;
 		leftChild = null;
 		rightChild = null;
+		parent = null;
 	}
 	
-	public Node(int key, Node left, Node right) {
+	public Node(int key, Node parent, Node leftChild, Node rightChild) {
 		this.key = key;
-		leftChild = left;
-		rightChild = right;
+		this.parent = parent;
+		this.leftChild = leftChild;
+		this.rightChild = rightChild;
 	}
 	
 	public int getKey() {
@@ -28,10 +31,26 @@ public class Node {
 			rightChild = node;
 	}
 	
-	public Node getChild(Node node, Boolean left) {
+	public Node getChild(Boolean left) {
 		if (left)
 			return leftChild;
 		else
 			return rightChild;
+	}
+	
+	public Node getParent()
+	{
+		return parent;
+	}
+	
+	public int getNumChildren()
+	{
+		int num = 0;
+		if( leftChild != null )
+			num++;
+		if( rightChild != null )
+			num++;
+		
+		return num;
 	}
 }
