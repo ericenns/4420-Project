@@ -2,7 +2,7 @@ package project.dictionary.comparison.tree;
 
 public class LeafNode extends Node {
 
-	int leafKey;
+	private int leafKey;
 	
 	public LeafNode(int key, int leafKey) {
 		super(key);
