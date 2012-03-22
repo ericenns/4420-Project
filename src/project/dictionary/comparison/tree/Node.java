@@ -4,23 +4,23 @@ public class Node {
 	protected Node leftChild;
 	protected Node rightChild;
 	protected Node parent;
-	protected int key;
+	protected String key;
 	
-	public Node(int key) {
+	public Node(String key) {
 		this.key = key;
 		leftChild = null;
 		rightChild = null;
 		parent = null;
 	}
 	
-	public Node(int key, Node parent, Node leftChild, Node rightChild) {
+	public Node(String key, Node parent, Node leftChild, Node rightChild) {
 		this.key = key;
 		this.parent = parent;
 		this.leftChild = leftChild;
 		this.rightChild = rightChild;
 	}
 	
-	public int getKey() {
+	public String getKey() {
 		return key;
 	}
 	

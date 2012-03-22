@@ -7,22 +7,39 @@ public class BitwiseTrie extends Tree
 	
 	public BitwiseTrie( int u )
 	{
-		root = new Node(-1, null, null, null);
+		root = new Node("-1", null, null, null);
 		
 		numLevels = (int)Math.ceil(Math.log(u)/Math.log(2));
 		System.out.println(numLevels);
 	}
 
-	public boolean search( int key ) 
+	public void print()
 	{
-		int[] keyArray = calcKeyBitString(key);
+		printRec(root);
+	}
+	
+	public void printRec(Node currNode)
+	{
+		if(currNode.getChild(true) != null)
+			printRec( currNode.getChild(true) );
+		
+		System.out.println(currNode.getKey());
+		
+		if(currNode.getChild(false) != null)
+			printRec( currNode.getChild(false) );
+		
+	}
+	
+	public boolean search( int key )
+	{
+		String keyString = calcKeyBitString(key);
 		
 		boolean found = false;
 		Node currNode = root;
 		
-		for(int i = 0; i < keyArray.length && currNode != null; i++)
+		for(int i = 0; i < keyString.length() && currNode != null; i++)
 		{
-			currNode = currNode.getChild(keyArray[i] == 0);
+			currNode = currNode.getChild(keyString.charAt(i) == '0');
 		}
 		
 		if( currNode != null )
@@ -32,147 +49,116 @@ public class BitwiseTrie extends Tree
 		
 		return found;
 	}
-
-	public void insert( int key ) 
+	
+	public void insert( int key )
 	{
-		int[] keyArray = calcKeyBitString(key);
+		String keyString = calcKeyBitString(key);
 		
 		Node currNode = root;
 		
-		for(int i = 0; i < keyArray.length; i++)
+		for( int i = 0; i < keyString.length(); i++ )
 		{
-			if( currNode.getChild(keyArray[i] == 0) == null )
+			if( currNode.getChild(keyString.charAt(i) == '0') == null )
 			{	
-				Node childNode;
-				if( i == keyArray.length - 1 )
-					childNode = new LeafNode(keyArray[i], key, currNode, null, null);
-				else
-					childNode = new Node(keyArray[i], currNode, null, null);
-				currNode.setChild(childNode, keyArray[i] == 0);
+				Node childNode = new Node(keyString.substring(0,i + 1), currNode, null, null);
+				currNode.setChild(childNode, keyString.charAt(i) == '0');
 			}
-			currNode = currNode.getChild(keyArray[i] == 0);
+			currNode = currNode.getChild(keyString.charAt(i) == '0');
 		}
 	}
 	
-	private int[] calcKeyBitString( int key )
+	public void delete( int key )
 	{
-		char[] tempArray;
-		tempArray = Integer.toBinaryString(key).toCharArray();
-
-		int[] keyArray = new int[numLevels];
-		
-		for( int i = 0; i  < keyArray.length - tempArray.length; i++ )
-		{
-			keyArray[i] = 0;
-		}
-		
-		for( int i = 0; i < tempArray.length; i++ )
-		{
-			keyArray[keyArray.length - tempArray.length + i] = Integer.parseInt(""+tempArray[i]);
-		}
-		
-		return keyArray;
-	}
-	
-	
-	public void delete( int key ) 
-	{
-		int[] keyArray = calcKeyBitString(key);
+		String keyString = calcKeyBitString(key);
 		
 		Node currNode = root;
 		
-		for(int i = 0; i < keyArray.length && currNode != null; i++)
-			currNode = currNode.getChild(keyArray[i] == 0);
+		// Find the node to be deleted, if it exists
+		for(int i = 0; i < keyString.length() && currNode != null; i++)
+			currNode = currNode.getChild(keyString.charAt(i) == '0');
 		
 		if( currNode != null )
 		{
 			while(currNode.parent.getNumChildren() == 1 && currNode.getParent() != root)
 				currNode = currNode.getParent();
 
-			currNode.parent.setChild(null, currNode.getKey() == 0);
+			currNode.parent.setChild(null, currNode.getKey().charAt(currNode.getKey().length()-1) == '0');
 		}
 	}
 	
-	public int predecessor( int key ) 
+	public String predecessor( int key )
 	{
-		int[] keyArray = calcKeyBitString(key);
-		int returnVal;
+		String keyString = calcKeyBitString(key);
+		String returnVal = "NULL";
 		
 		boolean found = false;
 		Node currNode = root;
 		
-		for(int i = 0; (i < keyArray.length) && (currNode.getChild(keyArray[i] == 0) != null); i++)
+		// Search for the key
+		for(int i = 0; (i < keyString.length()) && (currNode.getChild(keyString.charAt(i) == '0') != null); i++)
 		{
-			currNode = currNode.getChild(keyArray[i] == 0);
+			currNode = currNode.getChild(keyString.charAt(i) == '0');
 		}
-		
-		if( currNode instanceof LeafNode && ((LeafNode)currNode).getLeafKey() == key )
-		{			
-			returnVal = key;
-		}
+
+		if( currNode.getKey().equals(keyString))
+			returnVal = keyString;
 		else
 		{
-			if( currNode.getChild(true) == null )
+			Node prevNode = null;
+			boolean finished = false;
+			
+			// determine common ancestor for the predecessor and the prevNode
+			while( !finished )
 			{
-				//find a parent node that has a left child in order to find the predecessor
-				if(currNode != root ) 
+				if( currNode.getChild(true) != null && currNode.getChild(true) != prevNode )
 				{
-					// find a node that is the right child of it's parent
-					while( currNode.getKey() != 1 && currNode.getKey()!= -1  )
-					{
-						currNode = currNode.getParent();
-					}
+					currNode = currNode.getChild(true);
+					finished = true;
 					
-					currNode = currNode.getParent();
+					// find the max in this sub-tree
+					boolean foundPred = false;
 					
-					boolean finished = false;
-					while(!finished)
+					while( !foundPred )
 					{
-						if( currNode == root)
-						{
-							finished = true;
-						}
+						if( currNode.getChild(false) != null )
+							currNode = currNode.getChild(false);
+						else if( currNode.getChild(true) != null )
+							currNode = currNode.getChild(true);
 						else
 						{
-							if( currNode.getChild(true) == null )
-							{
-								currNode = currNode.getParent();
-								if( currNode.getChild(true) == null )
-								{
-									while( currNode.getKey() != 1 )
-									{
-										currNode = currNode.getParent();
-									}
-									currNode = currNode.getParent();
-								}
-							}
-							else
-								finished = true;
+							foundPred = true;
+							returnVal = currNode.getKey();
 						}
 					}
 				}
-			}
-			
-			if( currNode == root && currNode.getChild(true) == null )
-			{
-				returnVal = -1;
-			}
-			else
-			{
-				currNode = currNode.getChild(true);
-				
-				while(currNode.getNumChildren() != 0)
+				else
 				{
-					if( currNode.getChild(false) != null )
-						currNode = currNode.getChild(false);
+					if( currNode != root )
+					{
+						prevNode = currNode;
+						currNode = currNode.getParent();
+					}
 					else
-						currNode = currNode.getChild(true);
+						finished = true;
 				}
-				
-				returnVal = ((LeafNode)currNode).getLeafKey();
 			}
 		}
 		
 		return returnVal;
+	}
+	
+	private String calcKeyBitString( int key )
+	{
+		String keyString = Integer.toBinaryString(key);
+
+		String temp = "";
+		for(int i = 0; i < numLevels - keyString.length(); i++)
+		{
+			temp = temp + "0";
+		}
+
+		keyString = temp + keyString;
+		
+		return keyString;
 	}
 }
