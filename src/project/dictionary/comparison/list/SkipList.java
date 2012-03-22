@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class SkipList {
 	private SkipListNode head;
+	private SkipListNode tail;
 	private final int levels;
 	private Random generator;
 	
@@ -20,7 +21,31 @@ public class SkipList {
 	}
 	
 	public boolean search(int key) {
-		return true;
+		SkipListNode curr = head;
+		boolean found = false;
+		boolean done;
+		int compare;
+		
+		for (int i=levels-1; i>=0 && !found; i--) {
+			done = false;
+			while (!done) {
+				if (curr.getNext(i).getKey() > -1) {
+					compare = curr.getNext(i).compareKeys(key);
+					if (compare >= 0) {
+						done = true;
+						if (compare == 0) {
+							found = true;
+						}
+					} else {
+						curr = curr.getNext(i);
+					}
+				} else {
+					done = true;
+				}
+			}
+		}
+		
+		return found;
 	}
 	
 	public void insert(int key) {
@@ -79,11 +104,83 @@ public class SkipList {
 	}
 	
 	public void delete(int key) {
+		SkipListNode[] prev = new SkipListNode[levels];
+		SkipListNode curr = head;
+		SkipListNode toDelete = null;
+		boolean done;
+		int compare;
 		
+		for(int i=0; i<levels; i++) {
+			prev[i] = head;
+		}
+		
+		for (int i=levels-1; i>=0; i--) {
+			done = false;
+			while (!done) {
+				if (curr.getNext(i).getKey() > -1) {
+					compare = curr.getNext(i).compareKeys(key);
+					if (compare >= 0) {
+						done = true;
+						if (compare == 0) {
+							toDelete = curr.getNext(i);
+						}
+					} else {
+						for (int j=0; j<curr.getHeight(); j++) {
+							prev[j] = curr;
+						}
+						curr = curr.getNext(i);
+					}
+				} else {
+					done = true;
+				}
+			}
+		}
+		
+		if (toDelete != null) {
+			for (int i=0; i<levels; i++) {
+				prev[i].setNext(toDelete.getNext(i), i);
+			}
+		}
 	}
 	
 	public int predecessor(int key) {
-		return 1;
+		SkipListNode[] prev = new SkipListNode[levels];
+		SkipListNode curr = head;
+		SkipListNode pred = null;
+		boolean done;
+		int compare;
+		
+		for(int i=0; i<levels; i++) {
+			prev[i] = head;
+		}
+		
+		for (int i=levels-1; i>=0; i--) {
+			done = false;
+			while (!done) {
+				if (curr.getNext(i).getKey() > -1) {
+					compare = curr.getNext(i).compareKeys(key);
+					if (compare >= 0) {
+						done = true;
+						if (compare == 0) {
+							pred = curr.getNext(i);
+						}
+					} else {
+						for (int j=0; j<curr.getHeight(); j++) {
+							prev[j] = curr;
+						}
+						curr = curr.getNext(i);
+					}
+				} else {
+					done = true;
+				}
+			}
+		}
+		
+		if (pred != null) {
+			return pred.getKey();
+		} else {
+			return prev[0].getKey();
+		}
 	}
 	
 	public boolean isEmpty() {
