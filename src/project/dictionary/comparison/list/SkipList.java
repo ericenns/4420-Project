@@ -85,6 +85,8 @@ public class SkipList {
 							}
 							curr = curr.getNext(i);
 						}
+					} else {
+						done = true;
 					}
 				}
 			}

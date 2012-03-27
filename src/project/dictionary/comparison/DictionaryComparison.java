@@ -41,10 +41,10 @@ public class DictionaryComparison
 			structure = new SkipList(sequence.length);
 			break;
 		case BITWISETRIE:
-			structure = new BitwiseTrie(Integer.MAX_VALUE);
+			structure = new BitwiseTrie(Integer.MAX_VALUE-1);
 			break;
 		case XFASTTRIE:
-			structure = new XFastTrie(Integer.MAX_VALUE);
+			structure = new XFastTrie(Integer.MAX_VALUE-1);
 			break;
 		default:
 			return;
