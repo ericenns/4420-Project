@@ -18,46 +18,52 @@ public class DictionaryComparison
 	
 	public static void main(String[] argv) 
 	{
+		int[] insertSequence;
+		int[] searchSequence;
+		int[] predecessorSequence;
+		int[] deleteSequence;
 		Object[] structure = new Object[3];
 		long startTime;
 		long endTime;
-		int n = 25000;
+		int[] n = {25000, 50000, 75000, 100000};
 		
-		int[] insertSequence = generateSequence(n, u);
-		int[] searchSequence = generateSequence((int) Math.ceil(Math.sqrt((double)n)), u);
-		int[] predecessorSequence = generateSequence((int) Math.ceil(Math.sqrt((double)n)), u);
-		int[] deleteSequence = generateSequence((int) Math.ceil(Math.sqrt((double)n)), u);
-		
-		System.out.println(n + " insert operations:");
-		for (int i=0; i<3; i++) {
-			startTime = System.nanoTime();
-			structure[i] = testInsert(i, insertSequence);
-			endTime = System.nanoTime();
-			System.out.println(endTime - startTime);
-		}
-
-		System.out.println(n + " search operations:");
-		for (int i=0; i<3; i++) {
-			startTime = System.nanoTime();
-			testSearch(i, structure[i], searchSequence);
-			endTime = System.nanoTime();
-			System.out.println(endTime - startTime);
-		}
-
-		System.out.println(n + " predecessor operations:");
-		for (int i=0; i<3; i++) {
-			startTime = System.nanoTime();
-			testPredecessor(i, structure[i], predecessorSequence);
-			endTime = System.nanoTime();
-			System.out.println(endTime - startTime);
-		}
-
-		System.out.println(n + " delete operations:");
-		for (int i=0; i<3; i++) {
-			startTime = System.nanoTime();
-			testDelete(i, structure[i], deleteSequence);
-			endTime = System.nanoTime();
-			System.out.println(endTime - startTime);
+		for(int j=0; j<4; j++) {
+			insertSequence = generateSequence(n[j], u);
+			searchSequence = generateSequence(n[j]/2, u);
+			predecessorSequence = generateSequence(n[j]/2, u);
+			deleteSequence = generateSequence(n[j]/2, u);
+			
+			System.out.println(n[j] + " insert operations:");
+			for (int i=0; i<3; i++) {
+				startTime = System.nanoTime();
+				structure[i] = testInsert(i, insertSequence);
+				endTime = System.nanoTime();
+				System.out.println(endTime - startTime);
+			}
+	
+			System.out.println(n[j] + " search operations:");
+			for (int i=0; i<3; i++) {
+				startTime = System.nanoTime();
+				testSearch(i, structure[i], searchSequence);
+				endTime = System.nanoTime();
+				System.out.println(endTime - startTime);
+			}
+	
+			System.out.println(n[j] + " predecessor operations:");
+			for (int i=0; i<3; i++) {
+				startTime = System.nanoTime();
+				testPredecessor(i, structure[i], predecessorSequence);
+				endTime = System.nanoTime();
+				System.out.println(endTime - startTime);
+			}
+	
+			System.out.println(n[j] + " delete operations:");
+			for (int i=0; i<3; i++) {
+				startTime = System.nanoTime();
+				testDelete(i, structure[i], deleteSequence);
+				endTime = System.nanoTime();
+				System.out.println(endTime - startTime);
+			}
 		}
 
 		System.out.println("End of Processing...");
