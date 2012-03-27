@@ -9,10 +9,9 @@ public class SkipList {
 	private Random generator;
 	
 	public SkipList(int levels) {
-		SkipListNode tail = new SkipListNode(-1, levels);
-		
 		this.levels = levels;
 		this.head = new SkipListNode(-1, levels);
+		this.tail = new SkipListNode(-1, levels);
 		this.generator = new Random();
 		
 		for (int i=0; i<levels; i++) {

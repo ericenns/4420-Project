@@ -7,11 +7,7 @@ public class SkipListNode {
 	public SkipListNode(int key, int levels) {
 		this.key = key;
 		
-		if (key == -1) {
-			next = null;
-		} else {
-			this.next = new SkipListNode[levels];
-		}
+		this.next = new SkipListNode[levels];
 	}
 
 	public int getKey() {
@@ -35,7 +31,7 @@ public class SkipListNode {
 	}
 	
 	public boolean isTail() {
-		if (next == null && key == -1) {
+		if (key == -1) {
 			return true;
 		} else {
 			return false;

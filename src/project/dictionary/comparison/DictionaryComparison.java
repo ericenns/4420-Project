@@ -4,15 +4,20 @@ import java.util.Hashtable;
 import java.util.Random;
 
 import project.dictionary.comparison.bitwisetrie.BitwiseTrie;
+import project.dictionary.comparison.list.SkipList;
 import project.dictionary.comparison.tree.Node;
 import project.dictionary.comparison.xfasttrie.XFastNode;
 import project.dictionary.comparison.xfasttrie.XFastTrie;
 
 public class DictionaryComparison 
 {
+	public static final int LIST=0;
+	public static final int BITWISETRIE=1;
+	public static final int XFASTTRIE=2;
+	
 	public static void main(String[] argv) 
 	{
-		int sequence[] = generateSequence(1000000, Integer.MAX_VALUE);
+		int sequence[] = generateSequence(10000, Integer.MAX_VALUE);
 		XFastTrie trie = new XFastTrie(31);
 		
 		trie.insert(3);
@@ -59,8 +64,43 @@ public class DictionaryComparison
 		//System.out.println(hashTable[0][1].getKey());
 		System.out.println("End of Processing...");
 		
+		System.out.println(Integer.MAX_VALUE);
+		testInsert(LIST, sequence);
 		
+	}
+	
+	private static void testInsert(int dictionary, int[] sequence) {
+		Object structure;
 		
+		switch (dictionary) {
+		case LIST:
+			structure = new SkipList(sequence.length);
+			break;
+		case BITWISETRIE:
+			structure = new BitwiseTrie(Integer.MAX_VALUE);
+			break;
+		case XFASTTRIE:
+			structure = new XFastTrie(Integer.MAX_VALUE);
+			break;
+		default:
+			return;
+		}
+		
+		for (int i=0; i<sequence.length; i++) {
+			switch (dictionary) {
+			case LIST:
+				((SkipList) structure).insert(sequence[i]);
+				break;
+			case BITWISETRIE:
+				((BitwiseTrie) structure).insert(sequence[i]);
+				break;
+			case XFASTTRIE:
+				((XFastTrie) structure).insert(sequence[i]);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	/*
@@ -69,7 +109,6 @@ public class DictionaryComparison
 	private static int[] generateSequence(int n, int max) {
 		int[] sequence = new int[n];
 		boolean inserted = false;
-//		Hashtable inserted = new Hashtable();
 		int i = 0;
 		int toInsert;
 		Random generator = new Random();
@@ -85,7 +124,6 @@ public class DictionaryComparison
 				}
 			}
 			if (!inserted) {
-//			if (!inserted.containsKey(toInsert)) {
 				sequence[i] = toInsert;
 				i++;
 			}
