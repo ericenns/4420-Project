@@ -14,6 +14,7 @@ public class DictionaryComparison
 	public static final int LIST=0;
 	public static final int BITWISETRIE=1;
 	public static final int XFASTTRIE=2;
+	public static final int u=16777216;
 	
 	public static void main(String[] argv) 
 	{
@@ -21,7 +22,7 @@ public class DictionaryComparison
 		long startTime;
 		long endTime;
 		
-		sequence = generateSequence(25000, Integer.MAX_VALUE);
+		sequence = generateSequence(25000, u);
 		
 		for (int i=0; i<3; i++) {
 			startTime = System.nanoTime();
@@ -41,10 +42,10 @@ public class DictionaryComparison
 			structure = new SkipList(sequence.length);
 			break;
 		case BITWISETRIE:
-			structure = new BitwiseTrie(Integer.MAX_VALUE-1);
+			structure = new BitwiseTrie(u-1);
 			break;
 		case XFASTTRIE:
-			structure = new XFastTrie(Integer.MAX_VALUE-1);
+			structure = new XFastTrie(u-1);
 			break;
 		default:
 			return;
