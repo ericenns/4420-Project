@@ -13,7 +13,6 @@ public class BitwiseTrie extends Tree
 		root = new Node("-1", null, null, null);
 		
 		numLevels = (int)Math.ceil(Math.log(u)/Math.log(2));
-		System.out.println(numLevels);
 	}
 
 	public void print()

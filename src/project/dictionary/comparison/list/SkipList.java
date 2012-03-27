@@ -138,7 +138,7 @@ public class SkipList {
 		}
 		
 		if (toDelete != null) {
-			for (int i=0; i<levels; i++) {
+			for (int i=0; i<toDelete.getHeight(); i++) {
 				prev[i].setNext(toDelete.getNext(i), i);
 			}
 		}

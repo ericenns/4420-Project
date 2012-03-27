@@ -14,19 +14,48 @@ public class DictionaryComparison
 	public static final int LIST=0;
 	public static final int BITWISETRIE=1;
 	public static final int XFASTTRIE=2;
-	public static final int u=16777216;
+	public static final int u=262144;
 	
 	public static void main(String[] argv) 
 	{
-		int sequence[];
+		Object[] structure = new Object[3];
 		long startTime;
 		long endTime;
+		int n = 25000;
 		
-		sequence = generateSequence(25000, u);
+		int[] insertSequence = generateSequence(n, u);
+		int[] searchSequence = generateSequence((int) Math.ceil(Math.sqrt((double)n)), u);
+		int[] predecessorSequence = generateSequence((int) Math.ceil(Math.sqrt((double)n)), u);
+		int[] deleteSequence = generateSequence((int) Math.ceil(Math.sqrt((double)n)), u);
 		
+		System.out.println(n + " insert operations:");
 		for (int i=0; i<3; i++) {
 			startTime = System.nanoTime();
-			testInsert(i, sequence);
+			structure[i] = testInsert(i, insertSequence);
+			endTime = System.nanoTime();
+			System.out.println(endTime - startTime);
+		}
+
+		System.out.println(n + " search operations:");
+		for (int i=0; i<3; i++) {
+			startTime = System.nanoTime();
+			testSearch(i, structure[i], searchSequence);
+			endTime = System.nanoTime();
+			System.out.println(endTime - startTime);
+		}
+
+		System.out.println(n + " predecessor operations:");
+		for (int i=0; i<3; i++) {
+			startTime = System.nanoTime();
+			testPredecessor(i, structure[i], predecessorSequence);
+			endTime = System.nanoTime();
+			System.out.println(endTime - startTime);
+		}
+
+		System.out.println(n + " delete operations:");
+		for (int i=0; i<3; i++) {
+			startTime = System.nanoTime();
+			testDelete(i, structure[i], deleteSequence);
 			endTime = System.nanoTime();
 			System.out.println(endTime - startTime);
 		}
@@ -34,7 +63,7 @@ public class DictionaryComparison
 		System.out.println("End of Processing...");
 	}
 	
-	private static void testInsert(int dictionary, int[] sequence) {
+	private static Object testInsert(int dictionary, int[] sequence) {
 		Object structure;
 		
 		switch (dictionary) {
@@ -48,7 +77,7 @@ public class DictionaryComparison
 			structure = new XFastTrie(u-1);
 			break;
 		default:
-			return;
+			return null;
 		}
 		
 		for (int i=0; i<sequence.length; i++) {
@@ -61,6 +90,62 @@ public class DictionaryComparison
 				break;
 			case XFASTTRIE:
 				((XFastTrie) structure).insert(sequence[i]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		return structure;
+	}
+	
+	public static void testSearch(int dictionary, Object structure, int[] sequence) {
+		for (int i=0; i<sequence.length; i++) {
+			switch (dictionary) {
+			case LIST:
+				((SkipList) structure).search(sequence[i]);
+				break;
+			case BITWISETRIE:
+				((BitwiseTrie) structure).search(sequence[i]);
+				break;
+			case XFASTTRIE:
+				((XFastTrie) structure).search(sequence[i]);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	public static void testDelete(int dictionary, Object structure, int[] sequence) {
+		for (int i=0; i<sequence.length; i++) {
+			switch (dictionary) {
+			case LIST:
+				((SkipList) structure).delete(sequence[i]);
+				break;
+			case BITWISETRIE:
+				((BitwiseTrie) structure).delete(sequence[i]);
+				break;
+			case XFASTTRIE:
+				((XFastTrie) structure).delete(sequence[i]);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	public static void testPredecessor(int dictionary, Object structure, int[] sequence) {
+		for (int i=0; i<sequence.length; i++) {
+			switch (dictionary) {
+			case LIST:
+				((SkipList) structure).predecessor(sequence[i]);
+				break;
+			case BITWISETRIE:
+				((BitwiseTrie) structure).predecessor(sequence[i]);
+				break;
+			case XFASTTRIE:
+				((XFastTrie) structure).predecessor(sequence[i]);
 				break;
 			default:
 				break;

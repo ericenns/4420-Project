@@ -20,7 +20,6 @@ public class XFastTrie extends Tree
 	{
 		root = new XFastNode("-1", null, null, null, null);
 		numLevels = (int)Math.ceil(Math.log(u)/Math.log(2));
-		System.out.println("NumLevels: " + numLevels);
 		leftMostLeaf = new XFastNode("-2", null, null, null, null);
 		rightMostLeaf = new XFastNode("-3", null, null, null, null);
 		leftMostLeaf.setChild(rightMostLeaf, false);
