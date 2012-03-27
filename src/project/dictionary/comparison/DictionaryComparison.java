@@ -17,56 +17,20 @@ public class DictionaryComparison
 	
 	public static void main(String[] argv) 
 	{
-		int sequence[] = generateSequence(10000, Integer.MAX_VALUE);
-		XFastTrie trie = new XFastTrie(31);
+		int sequence[];
+		long startTime;
+		long endTime;
 		
-		trie.insert(3);
-		trie.insert(26);
-		trie.insert(30);
-		trie.insert(5);
-		trie.insert(1);
-		trie.insert(16);
-		trie.insert(21);
-		trie.insert(11);
+		sequence = generateSequence(25000, Integer.MAX_VALUE);
 		
-		boolean result = trie.search(21);
-		
-		if(result)
-			System.out.println("Search key found!");
-		else
-			System.out.println("Search key not found...");
-		
-		//Node[][] hashTable = trie.getHashTable();
-		
-		//System.out.println("Predecessor: " +  trie.predecessor(1) );
-		/*
-		XFastNode root = trie.getRoot();
-		XFastNode currNode = (XFastNode) root.getChild(false);
-		currNode = (XFastNode) currNode.getChild(true);
-		currNode = (XFastNode) currNode.getChild(true);
-		currNode = (XFastNode) currNode.getChild(true);
-		currNode = (XFastNode) currNode.getChild(true);
-		System.out.println(currNode.getKey());
-		*/
-		//System.out.println("BLAH: " + hashTable[1][2].getKey());
-		
-		//currNode = (XFastNode) currNode.getDescendant().getChild(false);
-		//currNode = (XFastNode) currNode.getChild(false);
-		
-		//System.out.println(currNode.getKey());
-		
-		//trie.insert(6);
-		//
-		
-		//System.out.println(hashTable[2][4].getKey());
-		
-		//trie.delete(4);
-		//System.out.println(hashTable[0][1].getKey());
+		for (int i=0; i<3; i++) {
+			startTime = System.nanoTime();
+			testInsert(i, sequence);
+			endTime = System.nanoTime();
+			System.out.println(endTime - startTime);
+		}
+
 		System.out.println("End of Processing...");
-		
-		System.out.println(Integer.MAX_VALUE);
-		testInsert(LIST, sequence);
-		
 	}
 	
 	private static void testInsert(int dictionary, int[] sequence) {
