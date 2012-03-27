@@ -1,5 +1,8 @@
 package project.dictionary.comparison;
 
+import java.util.Hashtable;
+import java.util.Random;
+
 import project.dictionary.comparison.tree.BitwiseTrie;
 
 public class DictionaryComparison 
@@ -7,6 +10,12 @@ public class DictionaryComparison
 	public static void main(String[] argv) 
 	{
 		BitwiseTrie trie = new BitwiseTrie(255);
+		
+		int sequence[] = generateSequence(1000000, Integer.MAX_VALUE);
+		
+//		for (int i=0; i<10; i++) {
+//			trie.insert(sequence[i]);
+//		}
 		
 		trie.insert(3);
 		trie.insert(202);
@@ -43,5 +52,36 @@ public class DictionaryComparison
 		System.out.println("end of processing.");
 		
 		
+	}
+	
+	/*
+	 * Returns an integer array of size n where each element is unique.
+	 */
+	private static int[] generateSequence(int n, int max) {
+		int[] sequence = new int[n];
+		boolean inserted = false;
+//		Hashtable inserted = new Hashtable();
+		int i = 0;
+		int toInsert;
+		Random generator = new Random();
+		
+		while (i<n) {
+			toInsert = generator.nextInt(max);
+			
+			// check if array contains value already
+			inserted = false;
+			for (int j=0; j<i && inserted==false; j++) {
+				if (sequence[i] == toInsert) {
+					inserted = true;
+				}
+			}
+			if (!inserted) {
+//			if (!inserted.containsKey(toInsert)) {
+				sequence[i] = toInsert;
+				i++;
+			}
+		}
+		
+		return sequence;
 	}
 }
