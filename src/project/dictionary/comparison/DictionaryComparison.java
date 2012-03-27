@@ -3,53 +3,62 @@ package project.dictionary.comparison;
 import java.util.Hashtable;
 import java.util.Random;
 
-import project.dictionary.comparison.tree.BitwiseTrie;
+import project.dictionary.comparison.bitwisetrie.BitwiseTrie;
+import project.dictionary.comparison.tree.Node;
+import project.dictionary.comparison.xfasttrie.XFastNode;
+import project.dictionary.comparison.xfasttrie.XFastTrie;
 
 public class DictionaryComparison 
 {
 	public static void main(String[] argv) 
 	{
-		BitwiseTrie trie = new BitwiseTrie(255);
-		
 		int sequence[] = generateSequence(1000000, Integer.MAX_VALUE);
-		
-//		for (int i=0; i<10; i++) {
-//			trie.insert(sequence[i]);
-//		}
+		XFastTrie trie = new XFastTrie(31);
 		
 		trie.insert(3);
-		trie.insert(202);
-		trie.insert(227);
-		trie.insert(145);
-		trie.insert(14);
-		trie.insert(111);
-		trie.insert(13);
-		trie.insert(185);
-		trie.insert(76);
-		trie.insert(98);
-	/*
-		boolean result = trie.search(3);
-		if( result )
-			System.out.println("Search key found");
-		else
-			System.out.println("Search key not found!");
+		trie.insert(26);
+		trie.insert(30);
+		trie.insert(5);
+		trie.insert(1);
+		trie.insert(16);
+		trie.insert(21);
+		trie.insert(11);
 		
-		trie.delete(3);
-		result = trie.search(3);
-		if( result )
-			System.out.println("Search key found");
+		boolean result = trie.search(21);
+		
+		if(result)
+			System.out.println("Search key found!");
 		else
-			System.out.println("Search key not found!");
+			System.out.println("Search key not found...");
+		
+		//Node[][] hashTable = trie.getHashTable();
+		
+		//System.out.println("Predecessor: " +  trie.predecessor(1) );
+		/*
+		XFastNode root = trie.getRoot();
+		XFastNode currNode = (XFastNode) root.getChild(false);
+		currNode = (XFastNode) currNode.getChild(true);
+		currNode = (XFastNode) currNode.getChild(true);
+		currNode = (XFastNode) currNode.getChild(true);
+		currNode = (XFastNode) currNode.getChild(true);
+		System.out.println(currNode.getKey());
 		*/
+		//System.out.println("BLAH: " + hashTable[1][2].getKey());
 		
-		//trie.print();
+		//currNode = (XFastNode) currNode.getDescendant().getChild(false);
+		//currNode = (XFastNode) currNode.getChild(false);
 		
+		//System.out.println(currNode.getKey());
 		
-		String r;
-		r = trie.predecessor(110);
-		System.out.println("Predecessor: " + r + " : " + Integer.parseInt(r, 2));
+		//trie.insert(6);
+		//
 		
-		System.out.println("end of processing.");
+		//System.out.println(hashTable[2][4].getKey());
+		
+		//trie.delete(4);
+		//System.out.println(hashTable[0][1].getKey());
+		System.out.println("End of Processing...");
+		
 		
 		
 	}

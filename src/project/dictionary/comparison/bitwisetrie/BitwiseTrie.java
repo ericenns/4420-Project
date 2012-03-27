@@ -1,4 +1,7 @@
-package project.dictionary.comparison.tree;
+package project.dictionary.comparison.bitwisetrie;
+
+import project.dictionary.comparison.tree.Node;
+import project.dictionary.comparison.tree.Tree;
 
 public class BitwiseTrie extends Tree 
 {
@@ -79,10 +82,10 @@ public class BitwiseTrie extends Tree
 		
 		if( currNode != null )
 		{
-			while(currNode.parent.getNumChildren() == 1 && currNode.getParent() != root)
+			while(currNode.getParent().getNumChildren() == 1 && currNode.getParent() != root)
 				currNode = currNode.getParent();
 
-			currNode.parent.setChild(null, currNode.getKey().charAt(currNode.getKey().length()-1) == '0');
+			currNode.getParent().setChild(null, currNode.getKey().charAt(currNode.getKey().length()-1) == '0');
 		}
 	}
 	
