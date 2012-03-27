@@ -36,7 +36,11 @@ public class XFastTrie extends Tree
 	
 	public boolean search( int key )
 	{
-		return Integer.parseInt(predecessor(key),2) == key;
+		String temp = predecessor(key);
+		if( temp == "-2" || temp == "-3")
+			return false;
+		else
+			return Integer.parseInt(predecessor(key),2) == key;
 	}
 	
 	public String predecessor( int key )
