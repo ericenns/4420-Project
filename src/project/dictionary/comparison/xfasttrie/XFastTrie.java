@@ -1,5 +1,7 @@
 package project.dictionary.comparison.xfasttrie;
 
+import java.util.HashMap;
+
 import project.dictionary.comparison.tree.Node;
 import project.dictionary.comparison.tree.Tree;
 
@@ -7,13 +9,18 @@ public class XFastTrie extends Tree
 {
 	XFastNode root;
 	int numLevels;
-	Node[][] hashTable;
 	XFastNode leftMostLeaf;
 	XFastNode rightMostLeaf;
+	HashMap hashTable;
 	
-	public Node[][] getHashTable()
+	public HashMap getHashTable()
 	{
 		return hashTable;
+	}
+	
+	public XFastNode getRoot()
+	{
+		return root;
 	}
 	
 	public XFastTrie( int u )
@@ -25,13 +32,7 @@ public class XFastTrie extends Tree
 		leftMostLeaf.setChild(rightMostLeaf, false);
 		rightMostLeaf.setChild(leftMostLeaf, true);
 		
-		hashTable = new Node[numLevels][u+1];
-		//System.out.println(numLevels + " x " + (u+1));
-	}
-	
-	public XFastNode getRoot()
-	{
-		return root;
+		hashTable = new HashMap();
 	}
 	
 	public boolean search( int key )
@@ -54,10 +55,11 @@ public class XFastTrie extends Tree
 		while( high - low > 1 )
 		{
 			mid = (int) Math.floor((high + low)/2);
-			if( hashTable[mid][Integer.parseInt(keyString.substring(0,mid+1),2)] != null )
+
+			if( hashTable.get(keyString.substring(0,mid+1)) != null )
 			{
 				low = mid;
-				tempNode = (XFastNode) hashTable[mid][Integer.parseInt(keyString.substring(0,mid+1),2)];	
+				tempNode = (XFastNode) hashTable.get(keyString.substring(0,mid+1));
 			}
 			else
 			{
@@ -66,19 +68,19 @@ public class XFastTrie extends Tree
 			}
 		}
 
-		if( hashTable[mid][Integer.parseInt(keyString.substring(0,mid+1),2)].getKey().equals(keyString) )
+		if( ((XFastNode)hashTable.get(keyString.substring(0,mid+1))).getKey().equals(keyString) )
 		{
 			return keyString;
 		}
 		
-		if( hashTable[mid][Integer.parseInt(keyString.substring(0,mid+1),2)].getChild(true) == null )
+		if( ((XFastNode) hashTable.get(keyString.substring(0,mid+1))).getChild(true) == null )
 		{
-			return ((XFastNode)hashTable[mid][Integer.parseInt(keyString.substring(0,mid+1),2)]).getDescendant().getChild(true).getKey();
+			return ((XFastNode)hashTable.get(keyString.substring(0,mid+1))).getDescendant().getChild(true).getKey();
 		}
 		
-		if(hashTable[mid][Integer.parseInt(keyString.substring(0,mid+1),2)].getChild(false) == null )
+		if( ((XFastNode) hashTable.get(keyString.substring(0,mid+1))).getChild(false) == null )
 		{
-			return ((XFastNode)hashTable[mid][Integer.parseInt(keyString.substring(0,mid+1),2)]).getDescendant().getKey();
+			return ((XFastNode)hashTable.get(keyString.substring(0,mid+1))).getDescendant().getKey();
 		}
 		
 		return "";
@@ -106,8 +108,8 @@ public class XFastTrie extends Tree
 
 				XFastNode childNode = new XFastNode(keyString.substring(0,i + 1), currNode, null, null, null);
 				currNode.setChild(childNode, keyString.charAt(i) == '0');
-				//System.out.println("Teehee" + Integer.parseInt(keyString.substring(0,i+1),2));
-				hashTable[i][Integer.parseInt(keyString.substring(0,i+1),2)] = childNode;
+				
+				hashTable.put(keyString.substring(0,i+1), childNode);
 			}
 			currNode = (XFastNode) currNode.getChild(keyString.charAt(i) == '0');
 		}
@@ -145,30 +147,24 @@ public class XFastTrie extends Tree
 	{
 		String keyString = calcKeyBitString(key);
 		
-		Node currNode = root;
-		
 		// Find the node to be deleted, if it exists
-		for(int i = 0; i < keyString.length() && currNode != null; i++)
-			currNode = currNode.getChild(keyString.charAt(i) == '0');
+		XFastNode nodeToDelete = (XFastNode) hashTable.get(keyString);
 
-		// delete nodes on the path to the node to be deleted
-		if( currNode != null )
+		// do work that is needed to fully delete the node from the trie
+		if( nodeToDelete != null )
 		{
 			// Remove the node to be deleted from the leaf linked list
-			currNode.getChild(true).setChild(currNode.getChild(false),false);
-			currNode.getChild(false).setChild(currNode.getChild(true),true);
+			nodeToDelete.getChild(true).setChild(nodeToDelete.getChild(false),false);
+			nodeToDelete.getChild(false).setChild(nodeToDelete.getChild(true),true);
 			
-			XFastNode nodeToDelete = (XFastNode) currNode;
-			
-			XFastNode prevNode = (XFastNode) currNode;
-			currNode = currNode.getParent();
-			hashTable[prevNode.getKey().length()-1][Integer.parseInt(currNode.getKey(),2)] = null;
-			
+			XFastNode prevNode = (XFastNode) nodeToDelete;
+			XFastNode currNode = (XFastNode) nodeToDelete.getParent();
+
 			// work your way up the tree deleting the appropriate nodes
-			while(currNode.getNumChildren() == 1 && currNode.getParent() != root)
+			while(currNode.getNumChildren() == 1 && currNode != root)
 			{
 				// remove the nodes that are going to deleted from the hash table
-				hashTable[currNode.getKey().length()-1][Integer.parseInt(currNode.getKey(),2)] = null;
+				hashTable.remove(currNode.getKey());
 
 				if( currNode.getKey().charAt(currNode.getKey().length()-1) == '0' )
 					((XFastNode)currNode.getParent()).setDescendant((XFastNode) nodeToDelete.getChild(false));
@@ -176,10 +172,24 @@ public class XFastTrie extends Tree
 					((XFastNode)currNode.getParent()).setDescendant((XFastNode) nodeToDelete.getChild(true));
 
 				prevNode = (XFastNode) currNode;
-				currNode = currNode.getParent();
-
+				currNode = (XFastNode) currNode.getParent();
 			}
+			
 			currNode.setChild(null, prevNode.getKey().charAt(prevNode.getKey().length()-1) == '0');
+			
+			currNode = (XFastNode) nodeToDelete.getParent();
+			hashTable.remove(nodeToDelete.getKey());
+				
+			// work your way up the tree updating descendant pointers
+			while( currNode != root)
+			{
+				if( currNode.getDescendant() == nodeToDelete && currNode.getChild(true) == null)
+					currNode.setDescendant((XFastNode) nodeToDelete.getChild(false));
+				else if( currNode.getDescendant() == nodeToDelete && currNode.getChild(false) == null )
+					currNode.setDescendant((XFastNode) nodeToDelete.getChild(true));
+				
+				currNode = (XFastNode) currNode.getParent();
+			}
 		}
 	}
 

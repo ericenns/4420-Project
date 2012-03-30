@@ -1,5 +1,6 @@
 package project.dictionary.comparison;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -18,6 +19,36 @@ public class DictionaryComparison
 	
 	public static void main(String[] argv) 
 	{
+		XFastTrie trie = new XFastTrie(31);
+
+		trie.insert(30);
+		trie.insert(26);
+		trie.insert(3);
+
+		trie.insert(177);
+	    //trie.delete(1);
+		//trie.delete(0);
+		
+		HashMap map = trie.getHashTable();
+		XFastNode currNode = trie.getRoot();
+		
+		if( map.get("00001") == null )
+			System.out.println("blah");
+		else
+			System.out.println("TEST");
+		
+		System.out.println(trie.predecessor(31));
+		//System.out.println( ((XFastNode) map.get("1")).getDescendant().getKey());
+		
+		//currNode = (XFastNode)map.get("11110");
+		//System.out.println(currNode.getKey());
+		//System.out.println(((XFastNode)currNode.getChild(true)).getKey());
+		//System.out.println(((XFastNode)currNode.getChild(true).getChild(true)).getKey());
+		//System.out.println(((XFastNode)currNode.getChild(true).getChild(true).getChild(true)).getKey());
+		
+		
+		
+		/*
 		int[] insertSequence;
 		int[] searchSequence;
 		int[] predecessorSequence;
@@ -65,7 +96,7 @@ public class DictionaryComparison
 				System.out.println(endTime - startTime);
 			}
 		}
-
+		*/
 		System.out.println("End of Processing...");
 	}
 	
