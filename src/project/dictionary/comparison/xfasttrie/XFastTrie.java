@@ -35,23 +35,22 @@ public class XFastTrie extends Tree
 		hashTable = new HashMap();
 	}
 	
-	public boolean search( int key )
+	public int search( int key )
 	{
-		String temp = predecessor(key);
-		if( temp == "-2" || temp == "-3")
-			return false;
-		else
-			return Integer.parseInt(predecessor(key),2) == key;
+		return predecessor( key );
 	}
 	
-	public String predecessor( int key )
+	public int predecessor( int key )
 	{
 		String keyString = calcKeyBitString(key);
+		int numOperations = 0;
+		
 		int low = 0;
 		int high = numLevels;
 		int mid = 0;
 		XFastNode tempNode = root;
 		
+		// binary search through levels of the trie
 		while( high - low > 1 )
 		{
 			mid = (int) Math.floor((high + low)/2);
@@ -66,29 +65,46 @@ public class XFastTrie extends Tree
 				high = mid;
 				mid = mid-1;
 			}
+			
+			numOperations++;
+		}
+		
+		// if tempNode is still unchanged, attempt to change it using the current mid val
+		if( tempNode == root )
+		{
+			if( (XFastNode) hashTable.get(keyString.substring(0,mid+1)) != null )
+				tempNode =(XFastNode) hashTable.get(keyString.substring(0,mid+1));
+			numOperations++;
+		}
+			
+		String result;
+		
+		if( tempNode.getKey().equals(keyString) )
+		{
+			System.out.println("Pred: " + keyString);
+			result = keyString;
+			numOperations++;
+		}
+		else if( tempNode.getChild(true) == null )
+		{
+			System.out.println("Pred: " + tempNode.getDescendant().getChild(true).getKey());
+			result = tempNode.getDescendant().getChild(true).getKey();
+			numOperations++;
+		}
+		else if( tempNode.getChild(false) == null )
+		{
+			System.out.println("Pred: " + tempNode.getDescendant().getKey());
+			result = tempNode.getDescendant().getKey();
+			numOperations++;
 		}
 
-		if( ((XFastNode)hashTable.get(keyString.substring(0,mid+1))).getKey().equals(keyString) )
-		{
-			return keyString;
-		}
-		
-		if( ((XFastNode) hashTable.get(keyString.substring(0,mid+1))).getChild(true) == null )
-		{
-			return ((XFastNode)hashTable.get(keyString.substring(0,mid+1))).getDescendant().getChild(true).getKey();
-		}
-		
-		if( ((XFastNode) hashTable.get(keyString.substring(0,mid+1))).getChild(false) == null )
-		{
-			return ((XFastNode)hashTable.get(keyString.substring(0,mid+1))).getDescendant().getKey();
-		}
-		
-		return "";
+		return numOperations;
 	}
 	
-	public void insert( int key )
+	public int insert( int key )
 	{
 		String keyString = calcKeyBitString(key);
+		int numOperations = 0;
 
 		XFastNode currNode = root;
 		XFastNode predecessor = null;
@@ -104,12 +120,15 @@ public class XFastTrie extends Tree
 						predecessor = currNode.getDescendant();
 					else
 						predecessor = (XFastNode) currNode.getDescendant().getChild(true);
+					numOperations++;
 				}
 
 				XFastNode childNode = new XFastNode(keyString.substring(0,i + 1), currNode, null, null, null);
 				currNode.setChild(childNode, keyString.charAt(i) == '0');
+				numOperations++;
 				
 				hashTable.put(keyString.substring(0,i+1), childNode);
+				numOperations++;
 			}
 			currNode = (XFastNode) currNode.getChild(keyString.charAt(i) == '0');
 		}
@@ -122,11 +141,13 @@ public class XFastTrie extends Tree
 		currNode.setChild(predecessor.getChild(false), false);
 		currNode.getChild(true).setChild(currNode, false);
 		currNode.getChild(false).setChild(currNode, true);
+		numOperations = numOperations + 4;
 		
 		// update descendant pointers appropriately
 		XFastNode newNode = currNode;
 		
 		currNode = (XFastNode) currNode.getParent();
+		
 		while( currNode != null )
 		{
 			XFastNode descendant = currNode.getDescendant();
@@ -137,18 +158,23 @@ public class XFastTrie extends Tree
 						Integer.parseInt(descendant.getKey(),2) < Integer.parseInt(newNode.getKey(),2))) )
 			{
 				currNode.setDescendant(newNode);
+				numOperations++;
 			}
 			
 			currNode = (XFastNode) currNode.getParent();
 		}
+		
+		return numOperations;
 	}
 	
-	public void delete( int key )
+	public int delete( int key )
 	{
 		String keyString = calcKeyBitString(key);
+		int numOperations = 0;
 		
 		// Find the node to be deleted, if it exists
 		XFastNode nodeToDelete = (XFastNode) hashTable.get(keyString);
+		numOperations++;
 
 		// do work that is needed to fully delete the node from the trie
 		if( nodeToDelete != null )
@@ -159,38 +185,49 @@ public class XFastTrie extends Tree
 			
 			XFastNode prevNode = (XFastNode) nodeToDelete;
 			XFastNode currNode = (XFastNode) nodeToDelete.getParent();
+			
+			hashTable.remove(nodeToDelete.getKey());
+			numOperations++;
 
 			// work your way up the tree deleting the appropriate nodes
 			while(currNode.getNumChildren() == 1 && currNode != root)
 			{
 				// remove the nodes that are going to deleted from the hash table
 				hashTable.remove(currNode.getKey());
+				numOperations++;
 
 				if( currNode.getKey().charAt(currNode.getKey().length()-1) == '0' )
 					((XFastNode)currNode.getParent()).setDescendant((XFastNode) nodeToDelete.getChild(false));
 				else
 					((XFastNode)currNode.getParent()).setDescendant((XFastNode) nodeToDelete.getChild(true));
+				numOperations++; 
 
 				prevNode = (XFastNode) currNode;
 				currNode = (XFastNode) currNode.getParent();
 			}
 			
 			currNode.setChild(null, prevNode.getKey().charAt(prevNode.getKey().length()-1) == '0');
+			numOperations++;
 			
 			currNode = (XFastNode) nodeToDelete.getParent();
-			hashTable.remove(nodeToDelete.getKey());
 				
 			// work your way up the tree updating descendant pointers
 			while( currNode != root)
 			{
-				if( currNode.getDescendant() == nodeToDelete && currNode.getChild(true) == null)
-					currNode.setDescendant((XFastNode) nodeToDelete.getChild(false));
-				else if( currNode.getDescendant() == nodeToDelete && currNode.getChild(false) == null )
-					currNode.setDescendant((XFastNode) nodeToDelete.getChild(true));
+				if( currNode.getDescendant() == nodeToDelete )
+				{ 
+					if( currNode.getChild(true) == null )
+						currNode.setDescendant((XFastNode) nodeToDelete.getChild(false));
+					else if( currNode.getChild(false) == null )
+						currNode.setDescendant((XFastNode) nodeToDelete.getChild(true));
+					
+					numOperations++;
+				}
 				
 				currNode = (XFastNode) currNode.getParent();
 			}
 		}
+		return numOperations;
 	}
 
 	private String calcKeyBitString( int key )
