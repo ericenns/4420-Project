@@ -14,27 +14,11 @@ public class BitwiseTrie extends Tree
 		
 		numLevels = (int)Math.ceil(Math.log(u)/Math.log(2));
 	}
-
-	public void print()
-	{
-		printRec(root);
-	}
 	
-	public void printRec(Node currNode)
-	{
-		if(currNode.getChild(true) != null)
-			printRec( currNode.getChild(true) );
-		
-		System.out.println(currNode.getKey());
-		
-		if(currNode.getChild(false) != null)
-			printRec( currNode.getChild(false) );
-		
-	}
-	
-	public boolean search( int key )
+	public int search( int key )
 	{
 		String keyString = calcKeyBitString(key);
+		int numOperations = 0;
 		
 		boolean found = false;
 		Node currNode = root;
@@ -42,55 +26,70 @@ public class BitwiseTrie extends Tree
 		for(int i = 0; i < keyString.length() && currNode != null; i++)
 		{
 			currNode = currNode.getChild(keyString.charAt(i) == '0');
+			numOperations++;
 		}
 		
 		if( currNode != null )
-		{
 			found = true;
-		}
 		
-		return found;
+		return numOperations;
 	}
 	
-	public void insert( int key )
+	public int insert( int key )
 	{
 		String keyString = calcKeyBitString(key);
+		int numOperations = 0;
 		
 		Node currNode = root;
 		
 		for( int i = 0; i < keyString.length(); i++ )
 		{
+			numOperations++;
 			if( currNode.getChild(keyString.charAt(i) == '0') == null )
 			{	
 				Node childNode = new Node(keyString.substring(0,i + 1), currNode, null, null);
 				currNode.setChild(childNode, keyString.charAt(i) == '0');
+				numOperations++;
 			}
 			currNode = currNode.getChild(keyString.charAt(i) == '0');
 		}
+		
+		return numOperations;
 	}
 	
-	public void delete( int key )
+	public int delete( int key )
 	{
 		String keyString = calcKeyBitString(key);
+		int numOperations = 0;
 		
 		Node currNode = root;
 		
 		// Find the node to be deleted, if it exists
 		for(int i = 0; i < keyString.length() && currNode != null; i++)
+		{
 			currNode = currNode.getChild(keyString.charAt(i) == '0');
+			numOperations++;
+		}
 		
 		if( currNode != null )
 		{
 			while(currNode.getParent().getNumChildren() == 1 && currNode.getParent() != root)
+			{
 				currNode = currNode.getParent();
+				numOperations++;
+			}
 
 			currNode.getParent().setChild(null, currNode.getKey().charAt(currNode.getKey().length()-1) == '0');
+			numOperations++;
 		}
+		
+		return numOperations;
 	}
 	
-	public String predecessor( int key )
+	public int predecessor( int key )
 	{
 		String keyString = calcKeyBitString(key);
+		int numOperations = 0;
 		String returnVal = "NULL";
 		
 		boolean found = false;
@@ -100,10 +99,14 @@ public class BitwiseTrie extends Tree
 		for(int i = 0; (i < keyString.length()) && (currNode.getChild(keyString.charAt(i) == '0') != null); i++)
 		{
 			currNode = currNode.getChild(keyString.charAt(i) == '0');
+			numOperations++;
 		}
 
 		if( currNode.getKey().equals(keyString))
+		{
 			returnVal = keyString;
+			numOperations++;
+		}
 		else
 		{
 			Node prevNode = null;
@@ -115,6 +118,7 @@ public class BitwiseTrie extends Tree
 				if( currNode.getChild(true) != null && currNode.getChild(true) != prevNode )
 				{
 					currNode = currNode.getChild(true);
+					numOperations++;
 					finished = true;
 					
 					// find the max in this sub-tree
@@ -131,10 +135,12 @@ public class BitwiseTrie extends Tree
 							foundPred = true;
 							returnVal = currNode.getKey();
 						}
+						numOperations++;
 					}
 				}
 				else
 				{
+					numOperations++;
 					if( currNode != root )
 					{
 						prevNode = currNode;
@@ -145,8 +151,8 @@ public class BitwiseTrie extends Tree
 				}
 			}
 		}
-		
-		return returnVal;
+		System.out.println("pred; " + returnVal);
+		return numOperations;
 	}
 	
 	private String calcKeyBitString( int key )

@@ -1,5 +1,6 @@
 package project.dictionary.comparison;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Random;
 
