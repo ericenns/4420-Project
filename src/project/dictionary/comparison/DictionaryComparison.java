@@ -15,7 +15,7 @@ public class DictionaryComparison
 	public static final int LIST=0;
 	public static final int BITWISETRIE=1;
 	public static final int XFASTTRIE=2;
-	public static final int u=262144;
+	public static final int u=1073741824;
 	
 	public static void main(String[] argv) 
 	{
@@ -24,8 +24,6 @@ public class DictionaryComparison
 		int[] predecessorSequence;
 		int[] deleteSequence;
 		Object[] structure = new Object[3];
-		long startTime;
-		long endTime;
 		int[] n = {25000, 50000, 75000, 100000};
 		String[][] results = new String[4][4];
 		String[] operations = {"Insert", "Search", "Predecessor", "Delete"};
@@ -99,7 +97,7 @@ public class DictionaryComparison
 			}
 		}
 		
-		return comparisons;
+		return (int)Math.ceil((double)comparisons/(double)sequence.length);
 	}
 	
 	public static int testSearch(int dictionary, Object structure, int[] sequence) {
@@ -121,7 +119,7 @@ public class DictionaryComparison
 			}
 		}
 		
-		return comparisons;
+		return (int)Math.ceil((double)comparisons/(double)sequence.length);
 	}
 	
 	public static int testDelete(int dictionary, Object structure, int[] sequence) {
@@ -143,7 +141,7 @@ public class DictionaryComparison
 			}
 		}
 		
-		return comparisons;
+		return (int)Math.ceil((double)comparisons/(double)sequence.length);
 	}
 	
 	public static int testPredecessor(int dictionary, Object structure, int[] sequence) {
@@ -165,7 +163,7 @@ public class DictionaryComparison
 			}
 		}
 		
-		return comparisons;
+		return (int)Math.ceil((double)comparisons/(double)sequence.length);
 	}
 	
 	/*
