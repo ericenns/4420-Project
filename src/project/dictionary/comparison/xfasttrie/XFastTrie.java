@@ -127,7 +127,9 @@ public class XFastTrie extends Tree
 				hashTable.put(keyString.substring(0,i+1), childNode);
 				numOperations++;
 			}
+			
 			currNode = (XFastNode) currNode.getChild(keyString.charAt(i) == '0');
+			numOperations++;
 		}
 		
 		if(predecessor == null)
@@ -159,6 +161,7 @@ public class XFastTrie extends Tree
 			}
 			
 			currNode = (XFastNode) currNode.getParent();
+			numOperations++;
 		}
 		
 		return numOperations;
@@ -201,6 +204,7 @@ public class XFastTrie extends Tree
 
 				prevNode = (XFastNode) currNode;
 				currNode = (XFastNode) currNode.getParent();
+				numOperations++;
 			}
 			
 			currNode.setChild(null, prevNode.getKey().charAt(prevNode.getKey().length()-1) == '0');
@@ -222,6 +226,7 @@ public class XFastTrie extends Tree
 				}
 				
 				currNode = (XFastNode) currNode.getParent();
+				numOperations++;
 			}
 		}
 		return numOperations;

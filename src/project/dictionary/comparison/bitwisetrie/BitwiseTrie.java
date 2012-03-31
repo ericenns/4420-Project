@@ -44,14 +44,15 @@ public class BitwiseTrie extends Tree
 		
 		for( int i = 0; i < keyString.length(); i++ )
 		{
-			numOperations++;
 			if( currNode.getChild(keyString.charAt(i) == '0') == null )
 			{	
 				Node childNode = new Node(keyString.substring(0,i + 1), currNode, null, null);
 				currNode.setChild(childNode, keyString.charAt(i) == '0');
 				numOperations++;
 			}
+			
 			currNode = currNode.getChild(keyString.charAt(i) == '0');
+			numOperations++;
 		}
 		
 		return numOperations;
@@ -140,7 +141,6 @@ public class BitwiseTrie extends Tree
 				}
 				else
 				{
-					numOperations++;
 					if( currNode != root )
 					{
 						prevNode = currNode;
@@ -148,6 +148,8 @@ public class BitwiseTrie extends Tree
 					}
 					else
 						finished = true;
+					
+					numOperations++;
 				}
 			}
 		}
