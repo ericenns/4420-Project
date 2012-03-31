@@ -81,19 +81,16 @@ public class XFastTrie extends Tree
 		
 		if( tempNode.getKey().equals(keyString) )
 		{
-			System.out.println("Pred: " + keyString);
 			result = keyString;
 			numOperations++;
 		}
 		else if( tempNode.getChild(true) == null )
 		{
-			System.out.println("Pred: " + tempNode.getDescendant().getChild(true).getKey());
 			result = tempNode.getDescendant().getChild(true).getKey();
 			numOperations++;
 		}
 		else if( tempNode.getChild(false) == null )
 		{
-			System.out.println("Pred: " + tempNode.getDescendant().getKey());
 			result = tempNode.getDescendant().getKey();
 			numOperations++;
 		}
