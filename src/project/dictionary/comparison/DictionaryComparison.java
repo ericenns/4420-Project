@@ -1,13 +1,9 @@
 package project.dictionary.comparison;
 
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Random;
 
 import project.dictionary.comparison.bitwisetrie.BitwiseTrie;
 import project.dictionary.comparison.list.SkipList;
-import project.dictionary.comparison.tree.Node;
-import project.dictionary.comparison.xfasttrie.XFastNode;
 import project.dictionary.comparison.xfasttrie.XFastTrie;
 
 public class DictionaryComparison 
@@ -34,10 +30,8 @@ public class DictionaryComparison
 			predecessorSequence = generateSequence(n[j]/2, u);
 			deleteSequence = generateSequence(n[j]/2, u);
 			
-			System.out.println("Insert");
 			results[0][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
-				System.out.println(i);
 				switch (i) {
 				case LIST:
 					structure[i] = new SkipList(insertSequence.length);
@@ -53,22 +47,16 @@ public class DictionaryComparison
 				}
 				results[0][j] += "\t" + testInsert(i, structure[i], insertSequence);
 			}
-			System.out.println("Search");
 			results[1][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
-				System.out.println(i);
 				results[1][j] += "\t" + testSearch(i, structure[i], searchSequence);
 			}
-			System.out.println("Pred");
 			results[2][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
-				System.out.println(i);
 				results[2][j] += "\t" + testPredecessor(i, structure[i], predecessorSequence);
 			}
-			System.out.println("Delete");
 			results[3][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
-				System.out.println(i);
 				results[3][j] += "\t" + testDelete(i, structure[i], deleteSequence);
 			}
 		}
