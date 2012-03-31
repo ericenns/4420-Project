@@ -151,7 +151,6 @@ public class BitwiseTrie extends Tree
 				}
 			}
 		}
-		System.out.println("pred; " + returnVal);
 		return numOperations;
 	}
 	

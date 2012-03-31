@@ -19,7 +19,8 @@ public class SkipList {
 		}
 	}
 	
-	public boolean search(int key) {
+	public int search(int key) {
+		int comparisons = 0;
 		SkipListNode curr = head;
 		boolean found = false;
 		boolean done;
@@ -30,6 +31,7 @@ public class SkipList {
 			while (!done) {
 				if (curr.getNext(i).getKey() > -1) {
 					compare = curr.getNext(i).compareKeys(key);
+					comparisons++;
 					if (compare >= 0) {
 						done = true;
 						if (compare == 0) {
@@ -44,10 +46,11 @@ public class SkipList {
 			}
 		}
 		
-		return found;
+		return comparisons;
 	}
 	
-	public void insert(int key) {
+	public int insert(int key) {
+		int comparisons = 0;
 		SkipListNode[] prev = new SkipListNode[levels];
 		SkipListNode curr;
 		SkipListNode newNode;
@@ -85,6 +88,7 @@ public class SkipList {
 							}
 							curr = curr.getNext(i);
 						}
+						comparisons++;
 					} else {
 						done = true;
 					}
@@ -102,9 +106,12 @@ public class SkipList {
 				}
 			}
 		}
+		
+		return comparisons;
 	}
 	
-	public void delete(int key) {
+	public int delete(int key) {
+		int comparisons = 0;
 		SkipListNode[] prev = new SkipListNode[levels];
 		SkipListNode curr = head;
 		SkipListNode toDelete = null;
@@ -120,6 +127,7 @@ public class SkipList {
 			while (!done) {
 				if (curr.getNext(i).getKey() > -1) {
 					compare = curr.getNext(i).compareKeys(key);
+					comparisons++;
 					if (compare >= 0) {
 						done = true;
 						if (compare == 0) {
@@ -142,9 +150,12 @@ public class SkipList {
 				prev[i].setNext(toDelete.getNext(i), i);
 			}
 		}
+		
+		return comparisons;
 	}
 	
 	public int predecessor(int key) {
+		int comparisons = 0;
 		SkipListNode[] prev = new SkipListNode[levels];
 		SkipListNode curr = head;
 		SkipListNode pred = null;
@@ -160,6 +171,7 @@ public class SkipList {
 			while (!done) {
 				if (curr.getNext(i).getKey() > -1) {
 					compare = curr.getNext(i).compareKeys(key);
+					comparisons++;
 					if (compare >= 0) {
 						done = true;
 						if (compare == 0) {
@@ -177,11 +189,13 @@ public class SkipList {
 			}
 		}
 		
-		if (pred != null) {
-			return pred.getKey();
-		} else {
-			return prev[0].getKey();
-		}
+//		if (pred != null) {
+//			return pred.getKey();
+//		} else {
+//			return prev[0].getKey();
+//		}
+//		
+		return comparisons;
 	}
 	
 	public boolean isEmpty() {

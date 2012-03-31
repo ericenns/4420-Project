@@ -51,34 +51,22 @@ public class DictionaryComparison
 				default:
 					break;
 				}
-				startTime = System.nanoTime();
-				testInsert(i, structure[i], insertSequence);
-				endTime = System.nanoTime();
-				results[0][j] += "\t" + (endTime - startTime);
+				results[0][j] += "\t" + testInsert(i, structure[i], insertSequence);
 			}
 	
 			results[1][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
-				startTime = System.nanoTime();
-				testSearch(i, structure[i], searchSequence);
-				endTime = System.nanoTime();
-				results[1][j] += "\t" + (endTime - startTime);
+				results[1][j] += "\t" + testSearch(i, structure[i], searchSequence);
 			}
 	
 			results[2][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
-				startTime = System.nanoTime();
-				testPredecessor(i, structure[i], predecessorSequence);
-				endTime = System.nanoTime();
-				results[2][j] += "\t" + (endTime - startTime);
+				results[2][j] += "\t" + testPredecessor(i, structure[i], predecessorSequence);
 			}
 	
 			results[3][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
-				startTime = System.nanoTime();
-				testDelete(i, structure[i], deleteSequence);
-				endTime = System.nanoTime();
-				results[3][j] += "\t" + (endTime - startTime);
+				results[3][j] += "\t" + testDelete(i, structure[i], deleteSequence);
 			}
 		}
 		
@@ -98,13 +86,13 @@ public class DictionaryComparison
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
 			case LIST:
-				((SkipList) structure).insert(sequence[i]);
+				comparisons += ((SkipList) structure).insert(sequence[i]);
 				break;
 			case BITWISETRIE:
-				((BitwiseTrie) structure).insert(sequence[i]);
+				comparisons += ((BitwiseTrie) structure).insert(sequence[i]);
 				break;
 			case XFASTTRIE:
-				((XFastTrie) structure).insert(sequence[i]);
+				comparisons += ((XFastTrie) structure).insert(sequence[i]);
 				break;
 			default:
 				break;
@@ -120,13 +108,13 @@ public class DictionaryComparison
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
 			case LIST:
-				((SkipList) structure).search(sequence[i]);
+				comparisons += ((SkipList) structure).search(sequence[i]);
 				break;
 			case BITWISETRIE:
-				((BitwiseTrie) structure).search(sequence[i]);
+				comparisons += ((BitwiseTrie) structure).search(sequence[i]);
 				break;
 			case XFASTTRIE:
-				((XFastTrie) structure).search(sequence[i]);
+				comparisons += ((XFastTrie) structure).search(sequence[i]);
 				break;
 			default:
 				break;
@@ -142,13 +130,13 @@ public class DictionaryComparison
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
 			case LIST:
-				((SkipList) structure).delete(sequence[i]);
+				comparisons += ((SkipList) structure).delete(sequence[i]);
 				break;
 			case BITWISETRIE:
-				((BitwiseTrie) structure).delete(sequence[i]);
+				comparisons += ((BitwiseTrie) structure).delete(sequence[i]);
 				break;
 			case XFASTTRIE:
-				((XFastTrie) structure).delete(sequence[i]);
+				comparisons += ((XFastTrie) structure).delete(sequence[i]);
 				break;
 			default:
 				break;
@@ -164,13 +152,13 @@ public class DictionaryComparison
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
 			case LIST:
-				((SkipList) structure).predecessor(sequence[i]);
+				comparisons += ((SkipList) structure).predecessor(sequence[i]);
 				break;
 			case BITWISETRIE:
-				((BitwiseTrie) structure).predecessor(sequence[i]);
+				comparisons += ((BitwiseTrie) structure).predecessor(sequence[i]);
 				break;
 			case XFASTTRIE:
-				((XFastTrie) structure).predecessor(sequence[i]);
+				comparisons += ((XFastTrie) structure).predecessor(sequence[i]);
 				break;
 			default:
 				break;
