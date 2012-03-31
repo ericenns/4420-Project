@@ -26,6 +26,8 @@ public class DictionaryComparison
 		long startTime;
 		long endTime;
 		int[] n = {25000, 50000, 75000, 100000};
+		String[][] results = new String[4][4];
+		String[] operations = {"Insert", "Search", "Predecessor", "Delete"};
 		
 		for(int j=0; j<4; j++) {
 			insertSequence = generateSequence(n[j], u);
@@ -33,58 +35,64 @@ public class DictionaryComparison
 			predecessorSequence = generateSequence(n[j]/2, u);
 			deleteSequence = generateSequence(n[j]/2, u);
 			
-			System.out.println(n[j] + " insert operations:");
+			results[0][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
+				switch (i) {
+				case LIST:
+					structure[i] = new SkipList(insertSequence.length);
+					break;
+				case BITWISETRIE:
+					structure[i] = new BitwiseTrie(u-1);
+					break;
+				case XFASTTRIE:
+					structure[i] = new XFastTrie(u-1);
+					break;
+				default:
+					break;
+				}
 				startTime = System.nanoTime();
-				structure[i] = testInsert(i, insertSequence);
+				testInsert(i, structure[i], insertSequence);
 				endTime = System.nanoTime();
-				System.out.println(endTime - startTime);
+				results[0][j] += "\t" + (endTime - startTime);
 			}
 	
-			System.out.println(n[j] + " search operations:");
+			results[1][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
 				startTime = System.nanoTime();
 				testSearch(i, structure[i], searchSequence);
 				endTime = System.nanoTime();
-				System.out.println(endTime - startTime);
+				results[1][j] += "\t" + (endTime - startTime);
 			}
 	
-			System.out.println(n[j] + " predecessor operations:");
+			results[2][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
 				startTime = System.nanoTime();
 				testPredecessor(i, structure[i], predecessorSequence);
 				endTime = System.nanoTime();
-				System.out.println(endTime - startTime);
+				results[2][j] += "\t" + (endTime - startTime);
 			}
 	
-			System.out.println(n[j] + " delete operations:");
+			results[3][j] = "" + n[j];
 			for (int i=0; i<3; i++) {
 				startTime = System.nanoTime();
 				testDelete(i, structure[i], deleteSequence);
 				endTime = System.nanoTime();
-				System.out.println(endTime - startTime);
+				results[3][j] += "\t" + (endTime - startTime);
+			}
+		}
+		
+		for (int i=0; i<4; i++) {
+			System.out.println(operations[i]);
+			for (int j=0; j<4; j++) {
+				System.out.println(results[i][j]);
 			}
 		}
 
 		System.out.println("End of Processing...");
 	}
 	
-	private static Object testInsert(int dictionary, int[] sequence) {
-		Object structure;
-		
-		switch (dictionary) {
-		case LIST:
-			structure = new SkipList(sequence.length);
-			break;
-		case BITWISETRIE:
-			structure = new BitwiseTrie(u-1);
-			break;
-		case XFASTTRIE:
-			structure = new XFastTrie(u-1);
-			break;
-		default:
-			return null;
-		}
+	private static int testInsert(int dictionary, Object structure, int[] sequence) {
+		int comparisons = 0;
 		
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
@@ -102,10 +110,12 @@ public class DictionaryComparison
 			}
 		}
 		
-		return structure;
+		return comparisons;
 	}
 	
-	public static void testSearch(int dictionary, Object structure, int[] sequence) {
+	public static int testSearch(int dictionary, Object structure, int[] sequence) {
+		int comparisons = 0;
+		
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
 			case LIST:
@@ -121,9 +131,13 @@ public class DictionaryComparison
 				break;
 			}
 		}
+		
+		return comparisons;
 	}
 	
-	public static void testDelete(int dictionary, Object structure, int[] sequence) {
+	public static int testDelete(int dictionary, Object structure, int[] sequence) {
+		int comparisons = 0;
+		
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
 			case LIST:
@@ -139,9 +153,13 @@ public class DictionaryComparison
 				break;
 			}
 		}
+		
+		return comparisons;
 	}
 	
-	public static void testPredecessor(int dictionary, Object structure, int[] sequence) {
+	public static int testPredecessor(int dictionary, Object structure, int[] sequence) {
+		int comparisons = 0;
+		
 		for (int i=0; i<sequence.length; i++) {
 			switch (dictionary) {
 			case LIST:
@@ -157,6 +175,8 @@ public class DictionaryComparison
 				break;
 			}
 		}
+		
+		return comparisons;
 	}
 	
 	/*
